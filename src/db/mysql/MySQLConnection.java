@@ -19,7 +19,9 @@ import db.DBConnectionFactory;
 import entity.Machine;
 import entity.Machine.MachineBuilder;
 
-public class MySQLConnection  {
+
+public class MySQLConnection implements DBConnection{
+
 	private Connection conn;
 
 	public MySQLConnection() {
@@ -31,13 +33,20 @@ public class MySQLConnection  {
 			e.printStackTrace();
 		}
 	}
-	
-	// get userName 
-	
-	//registerUser 
-	
-	//getTaskStatus 
-	public Set<Machine> getTaskStatus(String userId) { 
+
+	@Override
+	public void close() {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public Set<Machine> getTaskStatus(String userId) {
 		if(conn == null) {
 			return null; 
 		}
@@ -49,7 +58,7 @@ public class MySQLConnection  {
 			
 			ResultSet rs = stmt.executeQuery(); 
 			
-			MachineBuilder builder = new MachineBuilder();
+			MachineBuilder builder = new  MachineBuilder();
 			while(rs.next()) {
 				
 				builder.setMachineId(rs.getString("machine_id")); 
@@ -66,8 +75,9 @@ public class MySQLConnection  {
 		}
 		return machinesInUse; 
 	}
-	//get all avail Machine  
-	public Set<Machine> getAvailMachine() { 
+
+	@Override
+	public Set<Machine> getAvailMachine() {
 		if(conn == null) {
 			return null; 
 		}
@@ -95,10 +105,9 @@ public class MySQLConnection  {
 		}
 		return availMachines; 
 	}
-	
-	//get all machines status 
-	
-	public Set<Machine> getAllMachines() { 
+
+	@Override
+	public Set<Machine> getAllMachines() {
 		if(conn == null) {
 			return null; 
 		}
@@ -126,8 +135,9 @@ public class MySQLConnection  {
 		}
 		return allMachines; 
 	}
-	// get one machine status 
-	public Machine getMachineStatus(String machineId) { 
+
+	@Override
+	public Machine getMachineStatus(String machineId) {
 		if(conn == null) {
 			return null; 
 		}	
@@ -151,19 +161,20 @@ public class MySQLConnection  {
 			e.printStackTrace(); 
 		}
 		return null; 
+
 	}
-	
-	// start washing 
-	public Machine startWashingSQL( String machineId,String userId, String startTime, String endTime) { 
+
+	@Override
+	public boolean startWashingSQL(String machineId, String userId, String startTime, String endTime) {
 		if(conn == null) {
-			return null; 
+			return false; 
 		}
 		try {
 			String sql = "UPDATE machines SET availability = ?,"
 					+ "user_id = ?,start_time = ?, end_time = ? WHERE machine_id = ?";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			
-			ps.setString(1, "0");
+			ps.setBoolean(1, false); 
 			ps.setString(2, userId);
 			ps.setString(3, startTime);
 			ps.setString(4,	endTime);
@@ -176,18 +187,76 @@ public class MySQLConnection  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return getMachineStatus(machineId); 		
+		return true; 			
+
 	}
-	
-	
-	public void close() {
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+	@Override
+	public boolean endWashingSQL(String machineId) {
+		if (conn == null) {
+			return false;
 		}
+		try {
+			String sql = "UPDATE machines SET availability = ?,"
+					+ "user_id = ?,start_time = ?, end_time = ? WHERE machine_id = ?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			ps.setBoolean(1, true); //changed "1" into true
+			ps.setString(2, null);
+			ps.setString(3, null);
+			ps.setString(4,	null);
+			ps.setString(5, machineId);
+			
+			System.out.println("This is the statement for endWashing");
+			System.out.println(ps); 
+			ps.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true; 	 
+	}
+
+	@Override
+	public String getFullName(String userId) {
+		if (conn == null) {
+			return "";
+		}		
+		String name = "";
+		try {
+			String sql = "SELECT first_name, last_name FROM users WHERE user_id = ? ";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				name = rs.getString("first_name") + " " + rs.getString("last_name");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return name;
+
+	}
+
+	@Override
+	public boolean verifyLogin(String userId, String password) {
+		if (conn == null) {
+			return false;
+		}
+		try {
+			String sql = "SELECT user_id FROM users WHERE user_id = ? AND password = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, userId);
+			stmt.setString(2, password);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+
 	}
 
 }

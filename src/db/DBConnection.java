@@ -1,24 +1,27 @@
 package db;
 
-import java.util.List;
 import java.util.Set;
-
-
+import entity.Machine;
 
 public interface DBConnection {
-	/**
-	 * Close the connection.
-	 */
+	
 	public void close();
-
-	/**
-	 * Register one user
-	 * 
-	 * @param userId
-	 * @param password
-	 * @param firstname
-	 * @param lastname
-	 * @return boolean
-	 */
+	
+	public Set<Machine> getTaskStatus(String userId);
+	
+	public Set<Machine> getAvailMachine();
+	
+	public Set<Machine> getAllMachines();
+	
+	public Machine getMachineStatus(String machineId);
+	
+	public boolean startWashingSQL(String machineId,String userId, String startTime, String endTime);
+	
+	public boolean endWashingSQL(String machineId);
+	
+	public String getFullName(String userId);
+	
+	public boolean verifyLogin(String userId, String password);
+	
 
 }

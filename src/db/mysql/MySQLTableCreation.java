@@ -11,7 +11,7 @@ import entity.Machine;
 import db.mysql.MySQLConnection;
 
 public class MySQLTableCreation {
-	// Run this as Java application to reset db schema.
+
 	public static void main(String[] args) {
 		try {
 			// Step 1 Connect to MySQL.
@@ -34,7 +34,6 @@ public class MySQLTableCreation {
 
 			sql = "DROP TABLE IF EXISTS users";
 			statement.executeUpdate(sql);
-
 			
 			System.out.println("Import done successfully");
 
@@ -48,8 +47,8 @@ public class MySQLTableCreation {
 			
 
 			// machine table
-			sql = "CREATE TABLE machines (" + "machine_id VARCHAR(255) NOT NULL," + "availability BOOLEAN," +"user_id VARCHAR(255),"
-					+ "start_time TIMESTAMP," + "end_time TIMESTAMP,"
+			sql = "CREATE TABLE machines (" + "machine_id VARCHAR(255) NOT NULL," + "availability BOOLEAN DEFAULT true," +"user_id VARCHAR(255),"
+					+ "start_time TIMESTAMP NULL DEFAULT NULL," + "end_time TIMESTAMP NULL DEFAULT NULL,"
 					+ "PRIMARY KEY (machine_id)" +
 					//")";
 					",FOREIGN KEY (user_id) REFERENCES users(user_id)" + ")";
@@ -71,7 +70,8 @@ public class MySQLTableCreation {
 				
 			}
 			sql = "INSERT INTO machines VALUES('0006',FALSE,'1111',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)";
-			statement.executeUpdate(sql);
+			
+statement.executeUpdate(sql);
 			
 			conn.close();
 
@@ -97,9 +97,12 @@ public class MySQLTableCreation {
 		
 		System.out.println("---------------");
 		System.out.println("Start washing : "); 
-		Machine machInUse = conn.startWashingSQL("0002","1111","2019-05-11 01:15:58","2000-05-11T23:36:39.895");
-		machInUse.printAllInfo(); 
+		conn.startWashingSQL("0002","1111","2019-05-11 01:15:58","2000-05-11T23:36:39.895");
+		//machInUse.printAllInfo(); 
 		
 	}
 
-}
+
+
+	
+}	

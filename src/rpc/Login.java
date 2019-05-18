@@ -45,7 +45,7 @@ public class Login extends HttpServlet {
 			JSONObject obj = new JSONObject(); 
 			if(session != null) {
 				String userId = session.getAttribute("user_id").toString(); 
-				obj.put("status", "OK").put("user_id", userId).put("name", connection.getFullname(userId));
+				obj.put("status", "OK").put("user_id", userId).put("name", connection.getFullName(userId));
 				
 			}else {
 				obj.put("status", "Invalid Session"); 
@@ -78,7 +78,7 @@ public class Login extends HttpServlet {
 				if(session1 != null ) System.out.println("session created!");
 				session1.setAttribute("user_id", userId); 
 				session1.setMaxInactiveInterval(600);
-				obj.put("status", "OK").put("user_id", userId).put("name", connection.getFullname(userId));
+				obj.put("status", "OK").put("user_id", userId).put("name", connection.getFullName(userId));
 				
 			}else {
 				obj.put("status", "User Doesn't exist"); 
