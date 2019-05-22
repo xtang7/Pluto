@@ -7,7 +7,7 @@ import java.util.Set;
 import java.sql.Connection;
 
 import entity.Machine;
-
+import db.DBConnection;
 import db.mysql.MySQLConnection;
 
 public class MySQLTableCreation {
@@ -25,11 +25,8 @@ public class MySQLTableCreation {
 
 			// Step 2 Drop tables in case they exist.
 			Statement statement = conn.createStatement();
-			String sql = "DROP TABLE IF EXISTS categories";
-			statement.executeUpdate(sql);
-
-
-			sql = "DROP TABLE IF EXISTS machines";
+		
+			String sql = "DROP TABLE IF EXISTS machines";
 			statement.executeUpdate(sql);
 
 			sql = "DROP TABLE IF EXISTS users";
@@ -71,7 +68,7 @@ public class MySQLTableCreation {
 			}
 			sql = "INSERT INTO machines VALUES('0006',FALSE,'1111',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)";
 			
-statement.executeUpdate(sql);
+			statement.executeUpdate(sql);
 			
 			conn.close();
 
@@ -99,6 +96,11 @@ statement.executeUpdate(sql);
 		System.out.println("Start washing : "); 
 		conn.startWashingSQL("0002","1111","2019-05-11 01:15:58","2000-05-11T23:36:39.895");
 		//machInUse.printAllInfo(); 
+		
+		DBConnection testConn = new MySQLConnection();
+		System.out.println(testConn.createMachineSQL("34567")); 
+		testConn.close(); 
+	
 		
 	}
 

@@ -15,6 +15,8 @@ public interface DBConnection {
 	
 	public Machine getMachineStatus(String machineId);
 	
+	public boolean createMachineSQL(String machineId);
+	
 	public boolean startWashingSQL(String machineId,String userId, String startTime, String endTime);
 	
 	public boolean endWashingSQL(String machineId);
@@ -22,6 +24,8 @@ public interface DBConnection {
 	public String getFullName(String userId);
 	
 	public boolean verifyLogin(String userId, String password);
+
+	public boolean registerUser(String userId, String password, String firstname, String lastname);
 	
 
 }

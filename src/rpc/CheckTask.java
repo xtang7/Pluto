@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import db.DBConnection;
+import db.DBConnectionFactory;
 import db.mysql.MySQLConnection;
 import entity.Machine;
 
@@ -37,7 +39,7 @@ public class CheckTask extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String userId = request.getParameter("user_id");  
-		MySQLConnection conn = new MySQLConnection(); 
+		DBConnection conn = DBConnectionFactory.getConnection(); 
 		JSONArray array = new JSONArray();
 		
 		try {

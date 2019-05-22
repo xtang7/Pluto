@@ -14,20 +14,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import db.DBConnection;
+import db.DBConnectionFactory;
 import db.mysql.MySQLConnection;
 import entity.Machine;
 
 /**
  * Servlet implementation class CheckAvalibity
  */
-@WebServlet("/checkavalibity")
-public class CheckAvalibity extends HttpServlet {
+@WebServlet("/checkavailability")
+public class CheckAvailability extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public CheckAvalibity() {
+	public CheckAvailability() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -39,9 +40,11 @@ public class CheckAvalibity extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		System.out.println("Do get in check avail "); 
 		JSONArray array = new JSONArray();
 
-		MySQLConnection conn = new MySQLConnection();
+		DBConnection conn = DBConnectionFactory.getConnection(); 
+		System.out.println(conn == null); 
 		try {
 			Set<Machine> availMachines = conn.getAvailMachine();
 			for(Machine mach : availMachines) {

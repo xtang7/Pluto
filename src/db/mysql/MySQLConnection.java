@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.sql.Types;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class MySQLConnection implements DBConnection{
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void close() {
 		if (conn != null) {
@@ -43,6 +43,29 @@ public class MySQLConnection implements DBConnection{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@Override
+	public boolean registerUser(String userId, String password, String firstname, String lastname) {
+		// TODO Auto-generated method stub
+		if (conn == null) {
+			System.err.println("DB connection failed");
+			return false;
+		}
+
+		try {
+			String sql = "INSERT IGNORE INTO users VALUES (?, ?, ?, ?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, userId);
+			ps.setString(2, password);
+			ps.setString(3, firstname);
+			ps.setString(4, lastname);
+			
+			return ps.executeUpdate() == 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;	
 	}
 
 	@Override
@@ -161,6 +184,29 @@ public class MySQLConnection implements DBConnection{
 			e.printStackTrace(); 
 		}
 		return null; 
+
+	}
+	@Override
+	public boolean createMachineSQL(String machineId) {
+		if(conn == null) {
+			return false; 
+		}
+		try {
+			String sql = "INSERT IGNORE INTO machines VALUES (?, ?, ?, ?, ?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			ps.setString(1,machineId);  
+			ps.setBoolean(2,true);
+			ps.setNull(3, Types.VARCHAR);
+			ps.setNull(4,Types.TIMESTAMP);
+			ps.setNull(5,Types.TIMESTAMP);
+			System.out.println(ps);
+			ps.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true; 			
 
 	}
 
